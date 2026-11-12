@@ -1,5 +1,5 @@
 GeoRaster Tools V3 - autoteste do ambiente
-Data ......... 05/10/2026 20:31:31
+Data ......... 12/11/2026 15:31:30
 Executavel ... D:\Disciplina_MOD\GeoRasterToolsV3\Executavel\GeoRasterToolsV3\GeoRasterToolsV3.exe
 Congelado .... True
 Python ....... 3.11.9 (64 bits)
