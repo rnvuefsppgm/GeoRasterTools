@@ -1,0 +1,27 @@
+# requirements.txt - GeoRaster Tools V2
+# Compativel com Python 3.11 (Windows 10/11, 64 bits).
+#
+# Instalacao:
+#   python -m venv venv
+#   venv\Scripts\activate
+#   pip install --upgrade pip
+#   pip install -r requirements.txt
+#
+# Observacao sobre rasterio/GDAL no Windows: as rodas (wheels) oficiais do
+# PyPI para rasterio ja incluem os binarios GDAL necessarios para Windows
+# 64 bits - NAO e necessario instalar o GDAL separadamente nem usar Conda.
+# Tkinter ja vem embutido no instalador oficial do Python para Windows.
+
+numpy>=1.26,<2.1
+rasterio>=1.3.9,<1.4
+pyshp>=2.3,<2.4
+
+# Exigido pela aba de Amostragem (SDM): coordenadas geocentricas
+# EPSG:4978 para a distancia minima e conversao para WGS84.
+pyproj>=3.6,<4
+
+# Empacotamento para Windows (.exe)
+pyinstaller>=6.3,<7.0
+
+# Testes
+pytest>=7.4,<9.0

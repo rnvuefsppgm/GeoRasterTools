@@ -1,0 +1,139 @@
+GEORASTER TOOLS V3
+versao 3.0.0 - executavel para Windows 64 bits
+
+===========================================================================
+COMO USAR
+===========================================================================
+
+Duplo clique em:
+
+    GeoRasterToolsV3\GeoRasterToolsV3.exe
+
+Nao precisa instalar nada: nem Python, nem GDAL, nem QGIS. Nenhuma conexao
+com a internet e necessaria.
+
+As sete abas:
+
+    1. Recortar Rasters          recorta os .tif de uma pasta por shapefile
+    2. Reclassificar             regras Val_Min / Val_Max / Novo_Val
+    3. Separar Bandas            separa bandas de rasters multibanda
+    4. Reamostrar                leva tudo para a grade de um raster modelo
+    5. Merge de Rasters          NOVO - remonta blocos do Earth Engine
+    6. Verificar Alinhamento     confere resolucao, extensao e origem
+    7. Amostragem                presencas e background prontos para o SDM
+
+Duas mudancas valem para TODAS as abas nesta versao:
+
+  - barra de progresso, porcentagem e linha de etapa no rodape de cada aba
+    (antes so a de Amostragem tinha);
+  - onde se escolhe o tipo de dado de saida, o nome agora traz os bits e o
+    tipo numpy: "INT2U - 16 bits - uint16" em vez de so "INT2U". O nome vem
+    do terra/R, onde o numero conta BYTES, e isso confundia na hora de
+    escolher. Nas tabelas, o tipo do arquivo de entrada tambem mostra os
+    bits ("int16 (16 bits)").
+
+A aba 5 e a novidade desta versao. Quando uma exportacao do Earth Engine
+passa do limite de tamanho, o GEE parte o arquivo em blocos e acrescenta ao
+nome o deslocamento em pixels:
+
+    reclass_ndvi_stdDev_tau-0000000000-0000000000.tif
+    reclass_ndvi_stdDev_tau-0000046592-0000000000.tif
+    reclass_ndvi_stdDev_tau_p-0000000000-0000000000.tif
+    reclass_ndvi_stdDev_tau_p-0000046592-0000000000.tif
+
+Ao escolher a pasta, a aba lista sozinha so os conjuntos que precisam de
+merge - e repare que os quatro arquivos acima sao DOIS conjuntos, nao um:
+o "_p" faz parte do nome da camada. Arquivos avulsos nao aparecem. A saida
+sai como Merge_ + nome do conjunto (prefixo e nome sao editaveis) e vai,
+por padrao, para a mesma pasta dos blocos.
+
+O mosaico e montado em faixas de linhas, entao arquivos de varios GB sao
+unidos sem estourar a memoria. Na sobreposicao vale o primeiro bloco; as
+lacunas ficam como NoData; e o merge e recusado, com a explicacao, quando
+os blocos nao combinam (CRS, resolucao, tipo de dado, numero de bandas ou
+grade deslocada).
+
+
+===========================================================================
+COMO DISTRIBUIR
+===========================================================================
+
+Copie a PASTA "GeoRasterToolsV3" INTEIRA - sao cerca de 155 MB em 1.296
+arquivos. O executavel depende do que esta ao lado dele:
+
+    _internal\      bibliotecas Python, as tabelas do GDAL e a base do PROJ
+
+Copiar so o .exe NAO funciona.
+
+
+===========================================================================
+ONDE FUNCIONA
+===========================================================================
+
+Funciona     Windows 10 e Windows 11, 64 bits
+Funciona     Windows 8.1 e Windows Server 2012 R2 ou mais novos, 64 bits
+NAO funciona Windows de 32 bits
+NAO funciona Windows 7 ou anterior
+NAO funciona Linux ou macOS
+
+As bibliotecas de runtime da Microsoft (VCRUNTIME140) vao dentro do pacote,
+entao nao e preciso instalar o "Visual C++ Redistributable".
+
+Espaco em disco: reserve 400 MB. Alem dos 155 MB do pacote, os mosaicos e
+rasters gerados sao gravados onde voce escolher.
+
+
+===========================================================================
+SE NAO ABRIR
+===========================================================================
+
+1. Abra o Prompt de Comando na pasta do executavel e rode:
+
+       GeoRasterToolsV3.exe --autoteste
+
+   Sao 11 verificacoes, das bibliotecas ao ciclo completo de processamento
+   raster - incluindo um merge de dois blocos conferido pixel a pixel e a
+   janela montando as sete abas, todas com barra de progresso. O resultado fica em "autoteste.txt" ao
+   lado do executavel; envie esse arquivo junto ao relatar o problema.
+
+2. Se a janela nem chegar a aparecer, procure "erro_inicializacao.txt" na
+   mesma pasta.
+
+3. Antivirus: por ser um executavel gerado com PyInstaller e sem assinatura
+   digital, alguns antivirus o colocam em quarentena. Se a pasta encolher
+   ou sumir logo apos a copia, verifique a quarentena e adicione uma
+   excecao para a pasta inteira.
+
+4. Pasta protegida: evite executar de dentro de "Arquivos de Programas" ou
+   de uma pasta sincronizada do OneDrive. Prefira algo como C:\Ferramentas.
+
+
+===========================================================================
+O QUE FOI CONFERIDO NESTE PACOTE
+===========================================================================
+
+Com o executavel ja gerado - nao com o codigo-fonte:
+
+  - autoteste completo, 11 de 11 verificacoes;
+  - pacote copiado para outro diretorio e executado de la com GDAL_DATA,
+    PROJ_LIB e PROJ_DATA apontando para uma instalacao alheia (simulando
+    maquina com QGIS) e com o PATH reduzido a C:\Windows e
+    C:\Windows\system32: o pacote ignora as variaveis e usa os proprios
+    dados - 11 de 11 novamente.
+
+No codigo que gerou este executavel:
+
+  - 115 testes automatizados (32 do nucleo do merge, 17 da interface da aba
+    nova e 20 da barra de progresso e dos rotulos de tipo de dado) e mais
+    206 verificacoes numericas do nucleo de amostragem;
+  - a aba de merge exercitada com blocos REAIS do MapBiomas
+    (fire_frequency caatinga, 4 blocos do Earth Engine): mosaico de
+    37.149 x 51.818 pixels montado em 45 segundos, com 5,2 milhoes de
+    pixels conferidos contra os blocos de origem, todos identicos.
+
+
+===========================================================================
+DOCUMENTACAO
+===========================================================================
+
+README.md na raiz do projeto (D:\Disciplina_MOD\GeoRasterToolsV3).

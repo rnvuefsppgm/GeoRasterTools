@@ -1,0 +1,23 @@
+# Ambiente virtual (recriado por build_windows.bat / requirements.txt)
+venv/
+.venv/
+
+# Artefatos de build
+build/
+dist/
+*.spec.bak
+
+# Pacote compilado: vai como asset de Release, nao no historico do git
+# (158 MB em 1.296 arquivos; o .exe e regerado com build_windows.bat)
+Executavel/GeoRasterToolsV3/
+*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Saidas de execucao
+processing.log
+autoteste.txt
+erro_inicializacao.txt
