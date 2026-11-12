@@ -35,7 +35,7 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
-import config
+from nucleo import config
 from amostragem_fogo import __version__ as versao_amostragem
 from amostragem_fogo.analise import OperacaoCancelada
 from amostragem_fogo.config import (COORDENADAS_ORIGINAL, COORDENADAS_WGS84,
@@ -45,7 +45,7 @@ from amostragem_fogo.config import (COORDENADAS_ORIGINAL, COORDENADAS_WGS84,
                                      texto_para_float, texto_para_int)
 from amostragem_fogo.pipeline import executar_amostragem, executar_analise
 from amostragem_fogo.sdm import FiltroSDM
-from utils import CancellationToken
+from nucleo.utils import CancellationToken
 
 
 def _milhar(valor: float) -> str:
@@ -67,7 +67,7 @@ def _quadro_rolavel(pai: ttk.Frame, largura: int = 430) -> ttk.Frame:
 
     A implementacao foi para ``gui.quadro_rolavel`` na V3, para a aba de merge
     usar exatamente a mesma; o import tardio evita import circular."""
-    from gui import quadro_rolavel
+    from interface.gui import quadro_rolavel
 
     return quadro_rolavel(pai, largura)
 
@@ -128,7 +128,7 @@ class AbaAmostragemFogo:
     # ------------------------------------------------------------------
 
     def _construir(self) -> None:
-        from gui import LogPanel, make_result_tree, path_row, select_directory, select_file
+        from interface.gui import LogPanel, make_result_tree, path_row, select_directory, select_file
 
         direita = ttk.Frame(self.frame)
         direita.pack(side="right", fill="both", expand=True, padx=(4, 8), pady=8)
@@ -512,7 +512,7 @@ class AbaAmostragemFogo:
     # ------------------------------------------------------------------
 
     def _analisar(self) -> None:
-        from gui import run_background_task
+        from interface.gui import run_background_task
 
         try:
             parametros = self._ler_analise()

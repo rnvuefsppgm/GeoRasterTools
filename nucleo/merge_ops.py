@@ -48,7 +48,7 @@ import numpy as np
 import rasterio
 from rasterio.windows import Window
 
-from utils import CancelledError
+from nucleo.utils import CancelledError
 
 # ---------------------------------------------------------------------------
 # Padroes de nome
@@ -189,7 +189,7 @@ def filtrar_mosaicos(
 
 def grupos_da_pasta(pasta: str, minimo: int = 2) -> List[GrupoDeMerge]:
     """Atalho: lista os .tif da pasta e devolve os grupos que precisam merge."""
-    from utils import list_tif_files
+    from nucleo.utils import list_tif_files
 
     return agrupar_para_merge(list_tif_files(pasta), minimo=minimo)
 

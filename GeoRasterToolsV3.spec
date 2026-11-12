@@ -14,9 +14,9 @@ Alem do que a V1 ja tratava (dados GDAL do rasterio), esta versao empacota:
 * ``pyproj`` e a base PROJ, exigidos pela aba 6 para a distancia geocentrica
   (EPSG:4978) e para a conversao das coordenadas em WGS84. Sem os arquivos de
   ``proj_data`` o executavel abre mas falha ao transformar coordenadas;
-* o pacote local ``amostragem_fogo`` e os modulos ``tab_amostragem``,
-  ``tab_merge`` e ``merge_ops``, que sao importados de forma tardia dentro de
-  ``gui.py`` e por isso nao aparecem na analise estatica do PyInstaller.
+* os pacotes locais ``nucleo``, ``interface`` e ``amostragem_fogo``: as abas
+  sao importadas de forma tardia dentro de ``interface/gui.py`` e por isso nao
+  aparecem na analise estatica do PyInstaller.
 """
 
 import os
@@ -56,15 +56,17 @@ hidden_imports = []
 hidden_imports += collect_submodules("rasterio")
 hidden_imports += collect_submodules("pyproj")
 hidden_imports += collect_submodules("amostragem_fogo")
+hidden_imports += collect_submodules("nucleo")
+hidden_imports += collect_submodules("interface")
 hidden_imports += [
     "rasterio.sample",
     "rasterio._io",
     "rasterio.vrt",
     "rasterio._features",
     "shapefile",
-    "tab_amostragem",
-    "tab_merge",
-    "merge_ops",
+    "interface.tab_amostragem",
+    "interface.tab_merge",
+    "nucleo.merge_ops",
 ]
 
 a = Analysis(

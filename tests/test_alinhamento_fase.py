@@ -29,7 +29,7 @@ from rasterio.transform import Affine
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import raster_ops as ro
+from nucleo import raster_ops as ro
 
 RES = 0.008333333333333333
 LARGURA, ALTURA = 40, 30

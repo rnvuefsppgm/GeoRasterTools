@@ -28,7 +28,7 @@ from rasterio.transform import from_origin
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import raster_ops as ro
+from nucleo import raster_ops as ro
 
 
 @pytest.fixture

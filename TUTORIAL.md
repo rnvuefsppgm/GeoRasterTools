@@ -232,9 +232,10 @@ continue assim na maioria dos casos. Marque apenas quando o zero significar
 raster de **distância** o zero é o dado mais informativo ("dentro da
 classe"); marcar a opção apaga justamente as áreas de interesse.
 
-**Avisos:** se um raster sair com pouquíssima área válida, a aba avisa na
-caixa de diálogo no fim — perder metade da grade em silêncio é o tipo de erro
-que só aparece lá na frente, quando a amostragem devolve zero ponto.
+**Avisos:** se um raster sair com pouquíssima área válida, a aba informa na
+caixa de diálogo ao final. Vale conferir antes de seguir: uma grade com pouca
+área válida só costuma dar sinal lá na frente, quando a amostragem devolve
+poucos pontos.
 
 ---
 
@@ -410,7 +411,7 @@ da compressão LZW: 1 byte/pixel no `BYTE`, 2 nos `INT2*`, 4 nos
 | Merge recusa: "CRS / Resolucao / Tipo de dado diferente" | os blocos não vieram da mesma exportação | reprojete ou reamostre antes (abas 4 e 6) |
 | Merge recusa: "nao esta na mesma grade" | origens deslocadas por fração de pixel | reamostre os blocos para um raster modelo (aba 4) |
 | Um conjunto esperado não aparece na aba 5 | o nome não tem sufixo numérico de bloco | use `Selecionar arquivos manualmente...` |
-| "Origem divergente" num raster que parece alinhado | fase da grade | a mensagem traz o deslocamento em pixel; se for ~0 ou ~1 pixel, decida pelo valor em metros |
+| "Origem divergente" na aba 6 | a grade está deslocada em relação ao modelo | a mensagem traz o deslocamento em pixel; se for relevante, reamostre pela aba 4 |
 | Preditor reamostrado quase todo vazio | "Converter zeros (0) para NA" foi marcada | refaça sem marcar |
 | A amostragem gera 0 pontos | raster de referência inadequado | use `Conferir referência`; prefira um bioclimático a um raster de distância |
 | O SDM recebe menos pontos que o pedido | filtro da seção 5 desligado | selecione o raster de referência e marque as duas opções |

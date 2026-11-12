@@ -23,7 +23,7 @@ import pytest
 import rasterio
 from rasterio.transform import from_origin
 
-import config
+from nucleo import config
 
 TAMANHOS = ((1400, 900), (1150, 720), (1366, 700))
 
@@ -144,7 +144,7 @@ def pasta_com_rasters(tmp_path):
 
 def _coletar(monkeypatch, app, aba_metodo):
     """Roda o worker da aba sem thread e devolve o que foi para a fila."""
-    import gui
+    from interface import gui
 
     capturado = {"progress": [], "status": [], "done": None}
 
@@ -234,7 +234,7 @@ def test_edicao_do_dtype_na_tabela_aceita_rotulo_e_codigo(app_georaster,
 def test_aba_reclassificar_converte_o_rotulo_antes_de_processar(app_georaster,
                                                                 pasta_com_rasters,
                                                                 tmp_path, monkeypatch):
-    import raster_ops
+    from nucleo import raster_ops
 
     app = app_georaster
     saida = tmp_path / "reclass"

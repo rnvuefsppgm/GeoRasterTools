@@ -22,17 +22,15 @@ As sete abas:
     6. Verificar Alinhamento     confere resolucao, extensao e origem
     7. Amostragem                presencas e background prontos para o SDM
 
-Duas mudancas valem para TODAS as abas nesta versao:
+Duas caracteristicas valem para TODAS as abas:
 
-  - barra de progresso, porcentagem e linha de etapa no rodape de cada aba
-    (antes so a de Amostragem tinha);
-  - onde se escolhe o tipo de dado de saida, o nome agora traz os bits e o
-    tipo numpy: "INT2U - 16 bits - uint16" em vez de so "INT2U". O nome vem
-    do terra/R, onde o numero conta BYTES, e isso confundia na hora de
-    escolher. Nas tabelas, o tipo do arquivo de entrada tambem mostra os
-    bits ("int16 (16 bits)").
+  - barra de progresso, porcentagem e linha de etapa no rodape de cada aba;
+  - onde se escolhe o tipo de dado de saida, o nome traz os bits e o tipo
+    numpy: "INT2U - 16 bits - uint16". O nome vem do terra/R, onde o numero
+    conta BYTES, entao a interface mostra os bits por extenso. Nas tabelas,
+    o tipo do arquivo de entrada tambem mostra os bits ("int16 (16 bits)").
 
-A aba 5 e a novidade desta versao. Quando uma exportacao do Earth Engine
+A aba 5 trata dos blocos do Earth Engine. Quando uma exportacao do Earth Engine
 passa do limite de tamanho, o GEE parte o arquivo em blocos e acrescenta ao
 nome o deslocamento em pixels:
 

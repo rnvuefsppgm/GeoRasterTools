@@ -109,11 +109,11 @@ def autoteste() -> int:
         return f"Tcl/Tk {versao}"
 
     def _modulos_da_aplicacao():
-        import config
-        import merge_ops  # noqa: F401
-        import raster_ops  # noqa: F401
-        import tab_amostragem  # noqa: F401
-        import tab_merge  # noqa: F401
+        from nucleo import config
+        from nucleo import merge_ops  # noqa: F401
+        from nucleo import raster_ops  # noqa: F401
+        from interface import tab_amostragem  # noqa: F401
+        from interface import tab_merge  # noqa: F401
         from amostragem_fogo import __version__ as versao_nucleo
 
         return f"GeoRaster Tools {config.APP_VERSION}, nucleo de amostragem {versao_nucleo}"
@@ -121,7 +121,7 @@ def autoteste() -> int:
     def _janela_completa():
         import tkinter as tk
 
-        from gui import GeoRasterToolsApp
+        from interface.gui import GeoRasterToolsApp
 
         raiz = tk.Tk()
         raiz.withdraw()
@@ -170,7 +170,7 @@ def autoteste() -> int:
         import rasterio
         from rasterio.transform import from_origin
 
-        import raster_ops as ro
+        from nucleo import raster_ops as ro
         from amostragem_fogo.config import (Faixa, ParametrosAmostragem,
                                              ParametrosAnalise)
         from amostragem_fogo.pipeline import executar_completo
@@ -246,7 +246,7 @@ def autoteste() -> int:
         import rasterio
         from rasterio.transform import from_origin
 
-        import merge_ops as mo
+        from nucleo import merge_ops as mo
 
         pasta = tempfile.mkdtemp(prefix="georaster_merge_")
         try:
@@ -318,7 +318,7 @@ def main() -> int:
     if "--autoteste" in sys.argv[1:]:
         return autoteste()
     try:
-        from gui import launch_app
+        from interface.gui import launch_app
 
         launch_app()
         return 0

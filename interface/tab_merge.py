@@ -30,8 +30,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from typing import Dict, List, Optional
 
-import merge_ops
-from utils import CancellationToken, CancelledError, list_tif_files
+from nucleo import merge_ops
+from nucleo.utils import CancellationToken, CancelledError, list_tif_files
 
 COLUNAS_GRUPOS = ("Usar", "Conjunto", "Blocos", "Deteccao", "Arquivo de saida")
 COLUNAS_BLOCOS = ("Usar", "Arquivo", "Dimensoes", "Bandas", "Tipo", "NoData")
@@ -75,7 +75,7 @@ class AbaMergeRaster:
     # ------------------------------------------------------------------
 
     def _construir(self) -> None:
-        from gui import LogPanel, path_row, quadro_rolavel, select_directory
+        from interface.gui import LogPanel, path_row, quadro_rolavel, select_directory
 
         # A direita entra primeiro para o Tk reservar o espaco dela; a coluna
         # da esquerda e rolavel porque, em 1150x720 (tamanho minimo), as
@@ -344,7 +344,7 @@ class AbaMergeRaster:
                 valores = (MARCADO if grupo["usar_arquivo"][caminho] else DESMARCADO,
                            os.path.basename(caminho), "nao foi possivel ler", "-", "-", "-")
             else:
-                from gui import _tipo_de_entrada
+                from interface.gui import _tipo_de_entrada
 
                 valores = (MARCADO if grupo["usar_arquivo"][caminho] else DESMARCADO,
                            info.nome, info.dimensoes, str(info.bandas),
@@ -376,7 +376,7 @@ class AbaMergeRaster:
         self._atualizar_grupos()
 
     def _duplo_clique_grupo(self, evento) -> None:
-        from gui import edit_treeview_cell
+        from interface.gui import edit_treeview_cell
 
         def ao_confirmar(_linha, _coluna, novo_valor):
             indice = self._indice_selecionado()

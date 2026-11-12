@@ -1,9 +1,9 @@
 # GeoRaster Tools V3 (v3.0)
 
 Aplicativo desktop para Windows 10/11, interface em português (Tkinter/ttk),
-que reúne numa única janela **as ferramentas de preparo de raster do GeoRaster
-Tools** e **a aplicação V5 de amostragem**, com os pontos já preparados no
-formato que o **SDM_APP** consome.
+que reúne numa única janela as ferramentas de **preparo de rasters** e a
+**amostragem de pontos** para modelos de distribuição de espécies, com os
+arquivos já gravados no formato que o **SDM_APP** consome.
 
 ## Abas
 
@@ -13,31 +13,24 @@ formato que o **SDM_APP** consome.
 | 2 | **Reclassificar** | reclassifica por regras `Val_Min, Val_Max, Novo_Val`, com editor, conjuntos nomeados e import/export `.txt` |
 | 3 | **Separar Bandas** | separa bandas de rasters multibanda, com 3 padrões de nomenclatura |
 | 4 | **Reamostrar** | reamostra para a grade de um raster modelo, com `near`/`bilinear` detectado por arquivo |
-| 5 | **Merge de Rasters** | **novo na V3** — remonta os blocos que o Earth Engine gera quando uma exportação passa do limite de tamanho |
+| 5 | **Merge de Rasters** | remonta os blocos que o Earth Engine gera quando uma exportação passa do limite de tamanho |
 | 6 | **Verificar Alinhamento** | confere resolução, dimensões, extensão e origem contra um raster modelo |
 | 7 | **Amostragem** | analisa a frequência acumulada e sorteia presenças e background prontos para o SDM |
 
-### O que mudou da V2 para a V3
+Em todas as abas o rodapé traz **barra de progresso, porcentagem e a linha de
+etapa** (`[7/213] bio_12.tif`), e o processamento roda em uma thread separada,
+sem travar a janela. O painel de log guarda o histórico da execução, arquivo
+por arquivo.
 
-1. **nova aba 5, "Merge de Rasters"** (detalhada abaixo);
-2. a aba de amostragem passou a se chamar só **"Amostragem"** — era
-   "Amostragem de Fogo (SDM)". Nada mudou no comportamento: ela continua
-   servindo para qualquer raster de contagem, e o rótulo encurtado deixa isso
-   claro;
-3. **barra de progresso em todas as sete abas**. Antes só a de Amostragem
-   tinha: um lote de 200 rasters na aba Reclassificar passava minutos sem
-   nenhum sinal de vida além do log. Agora toda aba tem o mesmo rodapé —
-   barra, porcentagem e a linha de etapa (`[7/213] bio_12.tif`);
-4. **o tipo de dado de saída mostra bits e tipo numpy**:
-   `INT2U - 16 bits - uint16` em vez de só `INT2U`. O nome vem do `terra`/R,
-   onde o número é o tamanho em **bytes** — ler "INT2U" e entender "2 bits"
-   (ou "2 bytes, serve para qualquer coisa") já custou raster estourado. Vale
-   para a aba Reclassificar, para o padrão da aba Reamostrar e para a coluna
-   `Dtype` da tabela de camadas, que é editável com duplo clique. Nas tabelas,
-   o tipo do arquivo de **entrada** também passou a trazer os bits
-   (`int16 (16 bits)`), para a comparação com o tipo escolhido ser imediata.
+O guia de uso passo a passo está em **[TUTORIAL.md](TUTORIAL.md)**.
 
-### Tipos de dado disponíveis
+### Tipos de dado de saída
+
+Nas abas 2 e 4 o tipo aparece como `INT2U - 16 bits - uint16`: o código, os
+bits e o nome em numpy. O código vem do `terra`/R, onde o número conta
+**bytes** (`INT2U` = 2 bytes = 16 bits) — por isso a interface mostra os bits
+por extenso. Nas tabelas, o tipo do arquivo de **entrada** também traz os bits
+(`int16 (16 bits)`), para a comparação com o tipo escolhido ser imediata.
 
 | Opção | Bits | numpy | Faixa | NoData gravado |
 |---|---|---|---|---|
@@ -50,18 +43,16 @@ formato que o **SDM_APP** consome.
 | `INT1U` / `BYTE` | 8 | `uint8` | 0 a 255 | `255` |
 
 `INT1U` aparece na aba Reclassificar e `INT4U` na aba Reamostrar; o resto é
-comum às duas. Três cuidados: os tipos sem sinal gravam **NoData = 0**, o que
-transforma zeros válidos em "sem dado"; converter para inteiro **trunca**
-(com `bilinear`, `2,9` vira `2`); e não há recorte de faixa — valor fora do
-intervalo do tipo escolhido estoura em silêncio.
-
-As abas 1 a 4, 6 e 7 mantêm o mesmo comportamento de processamento da V2.
+comum às duas. Três cuidados ao escolher: os tipos sem sinal gravam
+**NoData = 0**, o que transforma zeros válidos em "sem dado"; converter para
+inteiro **trunca** (com `bilinear`, `2,9` vira `2`); e não há recorte de faixa
+— valor fora do intervalo do tipo escolhido estoura em silêncio.
 
 ---
 
 ## A aba 5 — Merge de Rasters
 
-### O problema
+### O cenário
 
 Quando uma exportação do Earth Engine passa do limite de tamanho, o GEE parte
 o resultado em blocos e acrescenta ao nome o deslocamento do bloco em pixels:
@@ -93,18 +84,14 @@ distintos.
 | **"Arquivo de saída"** | duplo clique edita o nome daquele conjunto |
 | **Memória por faixa (MB)** | tamanho do pedaço lido/gravado por vez; 64 MB por padrão |
 
-A barra de progresso, o botão `PARAR PROCESSAMENTO` e o log são os mesmos das
-demais abas.
-
 ### Como o mosaico é montado
 
-Não se carrega tudo na memória. Os blocos do GEE somam vários GB, e o
-`rasterio.merge.merge()` monta o resultado inteiro em um array antes de
-gravar. Aqui a saída é percorrida em **faixas de linhas**: para cada faixa, só
-os pedaços das entradas que a cruzam são lidos, combinados e gravados de uma
-vez. O pico de memória é o tamanho da faixa, não o do mosaico.
+A saída é percorrida em **faixas de linhas**: para cada faixa, só os pedaços
+das entradas que a cruzam são lidos, combinados e gravados de uma vez. O pico
+de memória é o tamanho da faixa, não o do mosaico — por isso blocos que somam
+vários GB são unidos sem pressão sobre a máquina.
 
-Outras decisões:
+Outras garantias:
 
 - **saída idêntica à entrada** — mesma resolução, CRS, tipo de dado e número
   de bandas; GeoTIFF LZW em tiles de 256×256, BigTIFF quando necessário;
@@ -112,18 +99,19 @@ Outras decisões:
   `rasterio.merge`), aplicada pixel a pixel sobre a máscara de dado válido —
   NoData de um bloco nunca apaga o dado do vizinho;
 - **lacunas** entre blocos ficam como NoData;
-- **nada de NoData inventado**: se nenhum bloco declara NoData e o tipo é
+- **NoData nunca é inventado**: se nenhum bloco declara NoData e o tipo é
   inteiro, o mosaico sai sem NoData declarado e o log avisa. Declarar `0`
-  nesse caso apagaria a classe 0 em todo o resto da cadeia;
+  nesse caso marcaria a classe 0 como ausência de dado em todo o resto da
+  cadeia;
 - **recusa explícita** quando os blocos não formam mosaico — CRS, resolução,
   tipo de dado ou número de bandas diferentes, ou grade deslocada —, dizendo
   qual arquivo destoa e em quê;
-- **cancelamento** remove o arquivo parcial: um GeoTIFF truncado deixado para
-  trás seria usado depois como se estivesse bom.
+- **cancelamento** remove o arquivo parcial, para que nenhum GeoTIFF truncado
+  fique para trás.
 
 ---
 
-## A aba 7 (Amostragem) e o que ela corrige
+## A aba 7 — Amostragem
 
 ### O contrato do SDM_APP
 
@@ -146,47 +134,40 @@ x,y,Value
 `Value` é 1 para presença e 0 para ausência (ambos configuráveis). O R ignora a
 terceira coluna; ela existe para quem for usar os arquivos no MaxEnt ou no QGIS.
 
-### O defeito que a V5 tinha
+### Por que existe o filtro pelo raster de referência
 
-A V5 sorteava olhando **apenas** o raster de frequência de fogo. Dois pontos
-perfeitamente válidos ali podem ser inúteis para o modelo:
+Um ponto sorteado apenas sobre o raster de frequência pode ser inútil para o
+modelo por duas razões:
 
-1. **caem em NoData de algum preditor** — o SDMtune descarta em silêncio;
-2. **caem na mesma célula do preditor** — o raster de fogo costuma ser bem mais
-   fino que o bioclimático, então vários pontos viram o mesmo registro
-   ambiental (pseudo-replicação).
-
-Medido com preditor de ~1 km e 18 % de NoData, pedindo 500 presenças:
-
-| | pedidos | em NoData | célula repetida | **úteis para o SDM** |
-|---|---|---|---|---|
-| V5 original | 500 | 107 (21,4 %) | 68 (13,6 %) | **343 (68,6 %)** |
-| **V2, filtro ligado** | 500 | 0 | 0 | **500 (100 %)** |
-
-### Como a V2 corrige
+1. **cai em NoData de algum preditor** — o SDMtune o descarta em silêncio;
+2. **cai na mesma célula do preditor** que outro ponto — o raster de
+   frequência costuma ser bem mais fino que o bioclimático, então vários
+   pontos viram o mesmo registro ambiental (pseudo-replicação).
 
 Na seção **5. Preparo para o SDM** você aponta **um** raster de referência — de
-preferência um bioclimático ou o de uso do solo. O filtro é aplicado **durante**
-o sorteio, e não depois, e é isso que faz a quantidade pedida ser realmente
-atingida:
+preferência um bioclimático ou o de uso do solo — e marca:
 
 - **Descartar pontos em NoData da referência**;
 - **No máximo um ponto por célula da referência** — é ela que define a grade
   (a mesma que a aba 6 confere).
 
-> **Use um raster, não a pasta inteira.** Exigir validade simultânea em todos os
-> preditores zera a amostra: nos 25 rasters do Acre, cada um aprovava de 42 % a
-> 100 % dos candidatos isoladamente, mas os vazios de NaN dos rasters de
-> distância são complementares e a interseção aprovava **zero**. Ver
-> [CORRECOES_V2.1.md](CORRECOES_V2.1.md).
+O filtro é aplicado **durante** o sorteio, e não depois: é isso que faz a
+quantidade pedida chegar inteira ao modelo. Numa medição com preditor de ~1 km
+e 18 % de NoData, pedindo 500 presenças, o filtro ligado entrega as 500
+utilizáveis.
 
-O botão **Conferir referência** sonda o raster escolhido contra o de fogo antes
-de processar, e informa CRS, quantos pontos caem dentro, quantos em célula
-válida e quantas células distintas existem.
+> **Use um raster, não a pasta inteira.** Exigir validade simultânea em todos
+> os preditores pode zerar a amostra: em uma pilha de 25 rasters do Acre, cada
+> um aprovava de 42 % a 100 % dos candidatos isoladamente, mas os vazios de
+> NaN dos rasters de distância são complementares entre si e a interseção
+> aprovava zero.
 
-Sem raster de referência selecionado o filtro fica desligado e a aba se comporta como a
-V5. O relatório registra em qualquer caso quantos candidatos foram recusados e
-por quê:
+O botão **Conferir referência** sonda o raster escolhido contra o de frequência
+antes de processar, e informa CRS, quantos pontos caem dentro, quantos em
+célula válida e quantas células distintas existem.
+
+Sem raster de referência selecionado o filtro fica desligado. O relatório
+registra em qualquer caso quantos candidatos foram recusados e por quê:
 
 ```
 PREPARO PARA SDM
@@ -220,59 +201,72 @@ PREPARO PARA SDM
   GeoJSON), mais as tabelas da análise;
 - leitura do GeoTIFF em janelas agregadas de ~8 Mpixels, sem carregar o arquivo
   inteiro na memória;
-- barra de progresso, mensagem da etapa e botão `PARAR PROCESSAMENTO` com
-  cancelamento cooperativo.
+- botão `PARAR PROCESSAMENTO` com cancelamento cooperativo.
 
 ---
 
 ## Estrutura do projeto
 
+O código está separado em três pacotes: **`nucleo/`** faz as contas e não
+importa nada de interface (dá para usar num script ou notebook), **`interface/`**
+é a camada Tkinter e **`amostragem_fogo/`** é o núcleo de amostragem, com CLI
+própria.
+
 ```
 GeoRasterToolsV3/
 ├── main.py                    Ponto de entrada (e `--autoteste`)
-├── gui.py                     Janela e abas 1 a 4 e 6 (+ registro das abas 5 e 7)
-├── tab_merge.py               Aba 5 (interface)
-├── merge_ops.py               Aba 5 (a conta, sem interface)
-├── tab_amostragem.py          Aba 7, isolada em módulo próprio
-├── raster_ops.py              Recorte, reclassificação, bandas, reamostragem, alinhamento
-├── config.py                  Regras default, dtypes, constantes da UI
-├── utils.py                   Logging, cancelamento, listagem de arquivos
-├── amostragem_fogo/           Núcleo da V5 + preparo para SDM
+│
+├── nucleo/                    Processamento, sem interface gráfica
+│   ├── config.py              regras default, dtypes, constantes
+│   ├── utils.py               logging, cancelamento, listagem de arquivos
+│   ├── raster_ops.py          recorte, reclassificação, bandas, reamostragem, alinhamento
+│   └── merge_ops.py           agrupamento de blocos e montagem de mosaicos
+│
+├── interface/                 Camada Tkinter
+│   ├── gui.py                 janela principal, widgets compartilhados, abas 1-4 e 6
+│   ├── tab_merge.py           aba 5
+│   └── tab_amostragem.py      aba 7
+│
+├── amostragem_fogo/           Núcleo de amostragem + preparo para SDM
 │   ├── config.py              parâmetros validados, seleção de saídas
 │   ├── blocos.py              leitura em janelas agregadas
 │   ├── analise.py             histograma e tabela de limiares
 │   ├── geo.py                 coordenadas, CRS, distância geocêntrica
 │   ├── amostragem.py          reservatório aleatório e filtros
-│   ├── sdm.py                 máscara de preditores (novo na V2)
+│   ├── sdm.py                 máscara pelo raster de referência
 │   ├── exportacao.py          x,y,Value, CSV detalhado, GeoJSON, relatório
 │   ├── pipeline.py            orquestração sem interface
-│   ├── gui.py                 janela autônoma da V5 (não usada pela V2)
+│   ├── gui.py                 janela autônoma do núcleo (não usada pela aplicação)
 │   └── cli.py                 linha de comando
+│
 ├── tests/
-│   ├── test_raster_ops.py         abas 1 a 4 e 6
-│   ├── test_reamostragem_zeros.py  defeito dos zeros na aba 4
+│   ├── test_raster_ops.py          abas 1 a 4 e 6
+│   ├── test_reamostragem_zeros.py  tratamento de zeros na aba 4
 │   ├── test_alinhamento_fase.py    fase da grade na aba 6
-│   ├── test_merge_ops.py          núcleo da aba 5 (agrupamento e mosaico)
-│   ├── test_tab_merge.py          interface da aba 5
-│   ├── test_rodape_e_dtypes.py    barra em todas as abas e rótulos de dtype
-│   ├── test_tab_amostragem.py     aba 7 e contrato do SDM_APP
-│   └── testes_amostragem_fogo.py  206 verificações do núcleo
-├── CORRECOES_V2.1.md          Diagnóstico dos erros corrigidos na 2.1
+│   ├── test_merge_ops.py           núcleo da aba 5 (agrupamento e mosaico)
+│   ├── test_tab_merge.py           interface da aba 5
+│   ├── test_rodape_e_dtypes.py     barra de progresso e rótulos de dtype
+│   ├── test_tab_amostragem.py      aba 7 e contrato do SDM_APP
+│   └── testes_amostragem_fogo.py   206 verificações numéricas do núcleo
+│
+├── Executavel/                Pacote compilado para Windows + LEIA-ME
+├── TUTORIAL.md                Guia de uso passo a passo
 ├── requirements.txt
 ├── pytest.ini
 ├── build_windows.bat
 └── GeoRasterToolsV3.spec
 ```
 
-As abas 5 e 7 são montadas com `import` tardio: se uma delas falhar (por
-exemplo, `pyproj` ausente), ela mostra o motivo e **as demais abas continuam
-funcionando**.
+As abas 5 e 7 são montadas com `import` tardio: se uma delas não puder ser
+carregada (por exemplo, `pyproj` ausente numa instalação a partir do código),
+ela mostra o motivo e **as demais abas continuam funcionando**.
 
 ---
 
 ## Instalação
 
-Pré-requisito: **Python 3.11 (64 bits)** com "Add python.exe to PATH".
+Pré-requisito: **Python 3.11 (64 bits)** com "Add python.exe to PATH" e Tcl/Tk
+(marcado por padrão no instalador oficial).
 
 ```bat
 python -m venv venv
@@ -282,7 +276,8 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Em relação à V1, a única dependência nova é o **pyproj**.
+Para quem só vai usar a aplicação, o executável em `Executavel\` dispensa
+qualquer instalação — veja o [TUTORIAL.md](TUTORIAL.md).
 
 ## Testes
 
@@ -290,8 +285,8 @@ Em relação à V1, a única dependência nova é o **pyproj**.
 venv\Scripts\python.exe -m pytest tests -q
 ```
 
-E as 206 verificações do núcleo de amostragem, que criam rasters sintéticos e
-conferem cada resultado numericamente:
+São 115 testes. E as 206 verificações numéricas do núcleo de amostragem, que
+criam rasters sintéticos e conferem cada resultado:
 
 ```bat
 venv\Scripts\python.exe tests\testes_amostragem_fogo.py
@@ -307,10 +302,9 @@ O resultado fica em `Executavel\GeoRasterToolsV3\GeoRasterToolsV3.exe`.
 Distribua a pasta inteira: o executável depende dos dados do GDAL e do PROJ
 que ficam ao lado dele.
 
-O `.spec` empacota explicitamente `pyproj` e a base PROJ, além do pacote local
-`amostragem_fogo` e dos módulos `tab_amostragem`, `tab_merge` e `merge_ops`,
-que são importados de forma tardia e não apareceriam na análise estática do
-PyInstaller.
+O `.spec` empacota explicitamente `pyproj` e a base PROJ, além dos pacotes
+locais `nucleo`, `interface` e `amostragem_fogo` — as abas são importadas de
+forma tardia e não apareceriam na análise estática do PyInstaller.
 
 Para conferir o pacote gerado (ou a instalação a partir do código):
 
@@ -327,20 +321,27 @@ resultado vai para `autoteste.txt`.
 
 ## Solução de problemas
 
-| Sintoma | Causa provável | Solução |
+| Sintoma | Causa provável | O que fazer |
 |---|---|---|
-| Aba 7 mostra "indisponível" | `pyproj` não instalado | `pip install -r requirements.txt` |
-| Merge recusa com "CRS/Resolucao/Tipo de dado diferente" | os blocos não vieram da mesma exportação | reprojete ou reamostre antes (abas 4 e 6) |
-| Merge recusa com "nao esta na mesma grade" | origens deslocadas por fração de pixel | reamostre os blocos para um raster modelo na aba 4 |
+| A janela não abre (executável) | empacotamento incompleto ou antivírus | rode `GeoRasterToolsV3.exe --autoteste` e leia `autoteste.txt`; se a pasta encolheu após a cópia, verifique a quarentena do antivírus |
+| Aba 7 mostra "indisponível" | `pyproj` ausente (instalação a partir do código) | `pip install -r requirements.txt` |
+| Aba 5 mostra "indisponível" | pacote `nucleo` incompleto | reinstale as dependências e rode `main.py --autoteste` |
+| Merge recusa: "CRS / Resolucao / Tipo de dado diferente" | os blocos não vieram da mesma exportação | reprojete ou reamostre antes (abas 4 e 6) |
+| Merge recusa: "nao esta na mesma grade" | origens deslocadas por fração de pixel | reamostre os blocos para um raster modelo na aba 4 |
 | Conjunto esperado não aparece na aba 5 | o nome não tem sufixo numérico de bloco | use **Selecionar arquivos manualmente...** |
+| Mosaico com faixas de NoData entre os blocos | a exportação não cobre a área inteira | confira a extensão de cada bloco na tabela de blocos |
+| "Origem divergente" na aba 6 | a grade do raster está deslocada em relação ao modelo | a mensagem informa o deslocamento em pixel; se for relevante, reamostre pela aba 4 |
+| Preditor reamostrado quase todo vazio | "Converter zeros (0) para NA" marcada num raster cujo zero é dado válido | refaça sem marcar a opção |
+| A amostragem gera 0 pontos | raster de referência inadequado | use **Conferir referência**; prefira um bioclimático a um raster de distância |
+| O SDM recebe menos pontos que o pedido | filtro da seção 5 desligado | selecione o raster de referência e marque as duas opções |
+| Distância mínima recusada | raster sem CRS definido | defina o CRS do arquivo ou use distância 0 |
 | `ImportError: DLL load failed` no rasterio | wheel incompatível | reinstale com Python 3.11 de 64 bits |
 | `ModuleNotFoundError: tkinter` | Python sem Tcl/Tk | reinstale marcando "tcl/tk and IDLE" |
-| Erro de projeção só no `.exe` | dados PROJ ausentes | confirme `dist\...\_internal\pyproj` e reconstrua com o `.spec` |
-| Distância mínima recusada | raster sem CRS | defina o CRS do arquivo ou use distância 0 |
-| SDM recebe menos pontos que o pedido | filtro desligado | selecione o raster de referência na seção 5 |
-| **0 amostras geradas** | referência inadequada | use **Conferir referência**; prefira um bioclimático a um raster de distância |
-| "Origem divergente" em raster alinhado | corrigido na 2.2 (fase da grade é circular) | atualize; a mensagem agora diz o deslocamento em pixel |
-| Preditor reamostrado quase todo vazio | opção "Converter zeros (0) para NA" foi marcada | ela vem desmarcada por padrão; refaça sem marcá-la |
+| Erro de projeção só no `.exe` | dados do PROJ ausentes no pacote | confirme a pasta `Executavel\GeoRasterToolsV3\_internal\pyproj` e reconstrua com o `.spec` |
+| Pasta de saída sem permissão de escrita | executando de "Arquivos de Programas" ou de pasta do OneDrive | execute de uma pasta comum, como `C:\Ferramentas` |
+
+Ao relatar um problema, envie o `autoteste.txt` junto — ele diz qual parte do
+ambiente falhou.
 
 ## Observações estatísticas
 

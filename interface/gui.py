@@ -36,9 +36,9 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from typing import Callable, Dict, List, Optional
 
-import config
-import raster_ops
-from utils import ensure_dir, get_logger, list_tif_files, setup_logging, ts_msg
+from nucleo import config
+from nucleo import raster_ops
+from nucleo.utils import ensure_dir, get_logger, list_tif_files, setup_logging, ts_msg
 
 logger = get_logger()
 
@@ -1252,7 +1252,7 @@ class GeoRasterToolsApp(ttk.Frame):
         aqui dentro para que uma falha nessa aba nao impeca as demais de
         abrir."""
         try:
-            import tab_merge
+            from interface import tab_merge
             self.aba_merge = tab_merge.build_tab(self, self.tab_merge)
         except Exception as exc:  # noqa: BLE001
             logger.exception("Falha ao montar a aba de merge")
@@ -1359,7 +1359,7 @@ class GeoRasterToolsApp(ttk.Frame):
         falha do pacote amostragem_fogo (ex.: pyproj ausente) nao impeca as
         cinco abas originais de abrir."""
         try:
-            import tab_amostragem
+            from interface import tab_amostragem
             self.aba_amostragem = tab_amostragem.build_tab(self, self.tab_sampling)
         except Exception as exc:  # noqa: BLE001
             logger.exception("Falha ao montar a aba de amostragem")

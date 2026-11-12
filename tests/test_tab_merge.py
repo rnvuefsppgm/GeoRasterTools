@@ -247,7 +247,7 @@ def test_execucao_gera_o_arquivo_com_o_nome_padrao(aba, pasta_com_blocos, monkey
     """Roda o worker da aba direto (sem thread) e confere o arquivo gravado."""
     import queue
 
-    import tab_merge
+    from interface import tab_merge
 
     monkeypatch.setattr(tab_merge.messagebox, "showinfo", lambda *a, **k: None)
     monkeypatch.setattr(tab_merge.messagebox, "showwarning", lambda *a, **k: None)

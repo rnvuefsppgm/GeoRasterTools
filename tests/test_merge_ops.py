@@ -24,8 +24,8 @@ import pytest
 import rasterio
 from rasterio.transform import from_origin
 
-import merge_ops as mo
-from utils import CancelledError
+from nucleo import merge_ops as mo
+from nucleo.utils import CancelledError
 
 # ---------------------------------------------------------------------------
 # Agrupamento por nome

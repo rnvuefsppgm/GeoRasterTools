@@ -42,7 +42,7 @@ def tk_root():
 @pytest.fixture(scope="session")
 def app_georaster(tk_root):
     """A janela completa, com as sete abas, construida uma unica vez."""
-    from gui import GeoRasterToolsApp
+    from interface.gui import GeoRasterToolsApp
 
     app = GeoRasterToolsApp(tk_root)
     tk_root.update_idletasks()

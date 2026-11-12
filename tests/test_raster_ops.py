@@ -22,7 +22,7 @@ import rasterio
 import shapefile as pyshp
 from rasterio.transform import from_origin
 
-import raster_ops as ro
+from nucleo import raster_ops as ro
 
 
 @pytest.fixture

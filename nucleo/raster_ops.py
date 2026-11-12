@@ -31,7 +31,7 @@ from rasterio.enums import Resampling
 from rasterio.mask import mask as rio_mask
 from rasterio.warp import reproject, transform_geom
 
-import config
+from nucleo import config
 
 Rule = Tuple[float, float, float]
 RuleSet = List[Rule]
