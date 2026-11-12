@@ -9,7 +9,8 @@ dist/
 
 # Pacote compilado: vai como asset de Release, nao no historico do git
 # (158 MB em 1.296 arquivos; o .exe e regerado com build_windows.bat)
-Executavel/GeoRasterToolsV3/
+# pacote compilado vai versionado (ver commit "executavel")
+#Executavel/GeoRasterToolsV3/
 *.zip
 
 # Python

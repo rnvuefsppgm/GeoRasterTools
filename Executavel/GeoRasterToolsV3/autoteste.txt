@@ -1,0 +1,23 @@
+GeoRaster Tools V3 - autoteste do ambiente
+Data ......... 05/10/2026 20:31:31
+Executavel ... D:\Disciplina_MOD\GeoRasterToolsV3\Executavel\GeoRasterToolsV3\GeoRasterToolsV3.exe
+Congelado .... True
+Python ....... 3.11.9 (64 bits)
+Plataforma ... win32
+GDAL_DATA .... D:\Disciplina_MOD\GeoRasterToolsV3\Executavel\GeoRasterToolsV3\_internal\rasterio\gdal_data
+PROJ_DATA .... D:\Disciplina_MOD\GeoRasterToolsV3\Executavel\GeoRasterToolsV3\_internal\pyproj\proj_dir\share\proj
+
+[ok]    numpy: 2.0.2, soma de teste = 45
+[ok]    rasterio: 1.3.11 (GDAL 3.9.1)
+[ok]    dados do GDAL: EPSG:4326 reconhecido (EPSG:4326)
+[ok]    pyproj: 3.7.2, base PROJ em D:\Disciplina_MOD\GeoRasterToolsV3\Executavel\GeoRasterToolsV3\_internal\pyproj\proj_dir\share\proj
+[ok]    base do PROJ: WGS84 -> ECEF ok (4202602.9, -4506739.8, -1640100.1)
+[ok]    pyshp: pyshp 2.3.1
+[ok]    tkinter: Tcl/Tk 8.6.12
+[ok]    modulos da aplicacao: GeoRaster Tools 3.0.0, nucleo de amostragem 5.0.0
+[ok]    janela com as 7 abas: 7 abas, todas com barra de progresso: Recortar Rasters, Reclassificar, Separar Bandas, Reamostrar, Merge de Rasters, Verificar Alinhamento, Amostragem
+[ok]    merge de blocos: 2 blocos unidos em Merge_bloco.tif (40 x 20 pixels, 1 banda(s), int16, 100.0% com dado)
+[ok]    processamento de ponta a ponta: raster gravado, reamostrado, alinhamento OK, 50 presencas em formato x,y,Value
+
+============================================================
+RESULTADO: TUDO OK
