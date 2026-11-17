@@ -350,3 +350,9 @@ Com distância mínima maior que zero, ou com o filtro de preditores ligado, a
 rejeição faz com que não sejam probabilidades de inclusão exatas; para
 inferência de desenho estrita, use uma implementação GRTS com probabilidades
 conhecidas.
+
+## Licença
+
+Este programa é software livre, distribuído sob a **GNU General Public License
+v3.0 (GPL-3.0)**. Você pode redistribuí-lo e/ou modificá-lo nos termos dessa
+licença. O texto completo está no arquivo [`LICENSE`](LICENSE).
